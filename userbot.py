@@ -55,8 +55,14 @@ async def run_task(client, t):
     fmt = t["fmt"]
     kino = t.get("kino", "")
 
-    await client.get_dialogs()  # guruhni akkaunt keshiga yuklash
-    entity = await client.get_entity(int(t["chat"]))
+    chat = str(t["chat"])
+    if chat.startswith("@"):
+        # To'g'ridan-to'g'ri kino botning shaxsiy chatiga yuboramiz
+        entity = await client.get_entity(chat)
+        kino = ""  # shaxsiy chatda @eslatma kerak emas
+    else:
+        await client.get_dialogs()  # guruhni akkaunt keshiga yuklash
+        entity = await client.get_entity(int(chat))
     print(f"[{t['title']}] {n} -> {end}", flush=True)
 
     sent = 0
